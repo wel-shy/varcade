@@ -11,6 +11,14 @@ Group session for a care home, set in virtual field. People will solve tasks tog
  - Trivia
  - Riddles
  - Jokes
- 
+
 ## Implementation
 Using [A-Frame](https://aframe.io/), and [Glitch](https://glitch.com/~aframe).
+
+### TODO
+ - Create a scene
+ - Build an arcade machine
+ - Build tasks
+ - Animate machine
+ - Show task
+ - Complete the task
