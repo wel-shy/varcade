@@ -5,8 +5,6 @@
 	<meta charset="utf-8">
 	<script src="https://aframe.io/releases/0.9.0/aframe.min.js"></script>
 	<script src="https://unpkg.com/aframe-environment-component/dist/aframe-environment-component.min.js"></script>
-	<link rel="stylesheet" href="/style.css">
-	<link href="https://fonts.googleapis.com/css?family=Lato:400,700" rel="stylesheet">
 	<title>varcade</title>
 </head>
 
@@ -16,9 +14,9 @@
 		let gazeInterval;
 		const gazeThreshold = 3000;
 		let rotationLimit = 20;
-    let questionIdx = 0;
+		let questionIdx = 0;
 
-    // list of riddles.
+		// list of riddles.
 		const riddles = [{
 				question: "What has many keys, but can't even open a single door?",
 				answer: 'A piano.',
@@ -37,29 +35,46 @@
 		 * Get the text element and display a random bit of trivia.
 		 */
 		async function displayRandomTrivia() {
-      questionIdx = Math.floor(Math.random() * riddles.length);
+			questionIdx = Math.floor(Math.random() * riddles.length);
 			await rotateLever(1);
 			await rotateLever(-1);
 
-      // Hide prompt
-      const prompt = document.querySelector('#prompt');
-      prompt.setAttribute('visbility', 'false');
+			// Hide prompt
+			const prompt = document.querySelector('#prompt');
+			prompt.setAttribute('visible', 'false');
+
+			// Set the question
+			const textEl = document.querySelector('#question');
+			textEl.setAttribute('visible', 'true');
+			textEl.setAttribute('value', riddles[questionIdx].question);
 
       // Set the question
-			const textEl = document.querySelector('#question');
-      textEl.setAttribute('visbility', 'true');
-			textEl.setAttribute('value', riddles[questionIdx].question);
+			const nextEl = document.querySelector('#next');
+			nextEl.setAttribute('visible', 'true');
+
+      const planeEl = document.querySelector('#plane');
+      planeEl.setAttribute('visible', 'true');
 		}
 
-    /**
-     * Show the answer
-     */
-    function displayAnswer() {
-      // Hide prompt
-      const question = document.querySelector('#question');
-      question.setAttribute('visbility', 'false');
-      question.setAttribute('value', riddles[questionIdx].question);
-    }
+		/**
+		 * Show the answer
+		 */
+		function displayAnswer() {
+			// Hide prompt
+			const question = document.querySelector('#question');
+			question.setAttribute('visible', 'false');
+
+      // Set the question
+			const nextEl = document.querySelector('#next');
+			nextEl.setAttribute('visible', 'false');
+
+      const planeEl = document.querySelector('#plane');
+      planeEl.setAttribute('visible', 'false');
+
+      const answer = document.querySelector('#answer');
+			question.setAttribute('visible', 'true');
+			question.setAttribute('value', riddles[questionIdx].answer);
+		}
 
 		/**
 		 * Rotate the lever up or down
@@ -119,6 +134,8 @@
 				const el = this.el;
 				const callback = this.data.callback;
 
+        console.log(document.querySelector('a-assets').fileLoader);
+
 				/**
 				 * Detect a gaze.
 				 *
@@ -141,24 +158,16 @@
 	</script>
 
 	<a-scene fog="type: linear; color: #AAA">
-<!-- Object for slot machine -->
 		<a-assets>
-			<a-asset-item id="mtl" src="https://cdn.glitch.com/fd29d84f-7cc5-4256-aa29-e94869ce06fe%2Fmaterials.mtl?1554561108272"></a-asset-item>
-			<a-asset-item id="obj" src="https://cdn.glitch.com/fd29d84f-7cc5-4256-aa29-e94869ce06fe%2Fmodel.obj?1554561110927"></a-asset-item>
+			<!-- Object for slot machine -->
+			<a-asset-item id="slot-mtl" src="https://cdn.glitch.com/fd29d84f-7cc5-4256-aa29-e94869ce06fe%2Fmaterials.mtl?1554561108272"></a-asset-item>
+			<a-asset-item id="slot-obj" src="https://cdn.glitch.com/fd29d84f-7cc5-4256-aa29-e94869ce06fe%2Fmodel.obj?1554561110927"></a-asset-item>
+			<!-- Object for cloud 1 -->
+			<a-asset-item id="cloud-mtl" src="https://cdn.glitch.com/fd29d84f-7cc5-4256-aa29-e94869ce06fe%2Ftrain.mtl?1554579002460"></a-asset-item>
+			<a-asset-item id="cloud-obj" src="https://cdn.glitch.com/fd29d84f-7cc5-4256-aa29-e94869ce06fe%2Ftrain.obj?1554579005920"></a-asset-item>
 		</a-assets>
-		<a-entity obj-model="obj: #obj; mtl: #mtl;" rotation="0 180 0" shadow="receive: false;" position="0.35 1 0.3" scale="5 5 5"></a-entity>
-<!-- object for Cloud 1 -->
-		<a-assets>
-			<a-asset-item id="mtlcloud1" src="https://cdn.glitch.com/af5ada0c-8fca-45ff-a2da-795fd849bc5d%2Fcloud_02.mtl?1554569757621"></a-asset-item>
-			<a-asset-item id="objcloud1" src="https://cdn.glitch.com/af5ada0c-8fca-45ff-a2da-795fd849bc5d%2Fcloud_02.obj?1554569758187"></a-asset-item>
-		</a-assets>
-		<a-entity obj-model="obj: #objcloud1; mtl: #mtlcloud1;" rotation="0 180 0" shadow="receive: false;" position="0.35 1 0.3" scale="5 5 5"></a-entity>
-<!-- Object for cloud 2 -->
-<a-assets>
-	<a-asset-item id="mtlcloud2" src="https://cdn.glitch.com/af5ada0c-8fca-45ff-a2da-795fd849bc5d%2Fcloud_02.mtl?1554569757621"></a-asset-item>
-	<a-asset-item id="objcloud2" src="https://cdn.glitch.com/af5ada0c-8fca-45ff-a2da-795fd849bc5d%2Fcloud_02.obj?1554569758187"></a-asset-item>
-</a-assets>
-<a-entity obj-model="obj: #objcloud2; mtl: #mtlcloud2;" rotation="0 180 0" shadow="receive: false;" position="1 1 1" scale="5 5 5"></a-entity>
+		<!-- Slot Machine -->
+		<a-entity obj-model="obj: #slot-obj; mtl: #slot-mtl;" rotation="0 180 0" shadow="receive: false;" position="0.35 1 0.3" scale="5 5 5"></a-entity>
 
 		<a-entity id="lever">
 			<a-cylinder color="black" height="1.1" radius="0.05" position="1.95 0.8 0.3"></a-cylinder>
@@ -166,12 +175,14 @@
 			<a-sphere color="grey" radius="0.2" position="1.92 0.34 0.27"></a-sphere>
 		</a-entity>
 
+    <a-plane id="plane" color="#fff" width="2" height="0.5" position="-0.5 1.5 -2" detect-gaze="callback: displayAnswer" visible="false"></a-plane>
+
 		<a-text id="prompt" value="Pull the leaver" color="#000" position="-1.5 2.5 -2" scale="1.5 1.5 1.5"></a-text>
+		<a-text id="question" value="" color="#000" position="-1.5 2.5 -2" scale="1.5 1.5 1.5" visible="false"></a-text>
+    <a-text id="next" value="Show answer" color="#000" position="-1.5 1.5 -2" scale="1.5 1.5 1.5" visible="false"></a-text>
+		<a-text id="answer" value="" color="#000" position="-1.5 2.5 -2" scale="1.5 1.5 1.5" visible="false"></a-text>
 
-    <a-text id="question" value="" color="#000" position="-1.5 2.5 -2" scale="1.5 1.5 1.5" visibility="false"></a-text>
-    <a-text id="answer" value="" color="#000" position="-1.5 2.5 -2" scale="1.5 1.5 1.5" visibility="false"></a-text>
-
-		<a-light type="directional" color="#FFF" intensity="0.5" position="-1 1 2">
+		<a-light type="directional" color="#FFF" intensity="0.5" position="-1 2.5 2">
 		</a-light>
 		<a-light type="ambient" color="#FFF">
 		</a-light>
@@ -183,7 +194,3 @@
 </body>
 
 </html>
-
-https://codepen.io/matthewsimo/pen/yeaLxP
-
-https://github.com/ngokevin/aframe-mss
