@@ -22,3 +22,6 @@ Using [A-Frame](https://aframe.io/), and [Glitch](https://glitch.com/~aframe).
  - Animate machine (detect gaze, and rotate lever)
  - Show task
  - Complete the task
+
+#### References
+ - Slot machine from [Anastasiia Ku](https://poly.google.com/user/aiHLOO4KRw6)
