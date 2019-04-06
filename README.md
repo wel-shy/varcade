@@ -17,10 +17,10 @@ Using [A-Frame](https://aframe.io/), and [Glitch](https://glitch.com/~aframe).
 
 ### TODO
  - ~~Create a scene (Floor, Sky)~~
- - Build an arcade machine (Rectangle Entity, Lever)
- - Build tasks (find riddles, look at rendering videos?)
- - Animate machine (detect gaze, and rotate lever)
- - Show task
+ - ~~Build an arcade machine (Rectangle Entity, Lever)~~
+ - Build tasks (~~find riddles~~, look at rendering videos?)
+ - Animate machine (~~detect gaze~~, and rotate lever)
+ - ~~Show task~~
  - Complete the task
 
 #### References
