@@ -5,14 +5,37 @@
   <meta charset="utf-8">
   <script src="https://aframe.io/releases/0.9.0/aframe.min.js"></script>
   <script src="https://unpkg.com/aframe-environment-component/dist/aframe-environment-component.min.js"></script>
-  <script src="./js.handlersjs"></script>
-
   <title>varcade</title>
 </head>
 
 <body>
+  <script>
+  let rotateTimeout;
+
+  AFRAME.registerComponent('change-color-on-hover', {
+    init() {
+      const data = this.data;
+      const el = this.el;  // <a-box>
+      let rotation = el.getAttribute('rotation');
+
+      el.addEventListener('mouseenter', () => {
+        rotateTimeout = setInterval(() => {
+          rotation.y = rotation.y + 1;
+          el.setAttribute('rotation', rotation);
+        }, 100);
+      });
+
+      el.addEventListener('mouseleave', () => {
+        clearTimeout(rotateTimeout);
+      });
+    }
+  });
+  </script>
+
   <a-scene fog="type: linear; color: #AAA">
-    <a-box position="0.5 0.5 0.3" rotation="0 0 0" color="#0095DD" shadow change-color-on-hover="color: blue"></a-box>
+    <a-box id="slot-machine" src="https://cdn.glitch.com/af5ada0c-8fca-45ff-a2da-795fd849bc5d%2Fslot-machine-2304135_1920.png?1554552910277" position="0.5 0.5 0.3" rotation="0 0 0" color="#0095DD" shadow change-color-on-hover="color: blue"></a-box>
+    <a-text value="Pull the lever for some Trivia!" color="#BBB"
+            position="-0.9 0.2 -3" scale="1.5 1.5 1.5"></a-text>
     <a-light type="directional" color="#FFF" intensity="0.5" position="-1 1 2">
     </a-light>
     <a-light type="ambient" color="#FFF">
@@ -20,7 +43,7 @@
     <a-camera position="0 1 4" cursor-visible="true" cursor-scale="2" cursor-color="#0095DD" cursor-opacity="0.5">
       <a-cursor></a-cursor>
     </a-camera>
-    <a-entity environment="preset: forest; dressingAmount: 500; ground: hills; groundColor: #556B2F; groundColor2: #6B8E23; skyType: atmosphere;"></a-entity>
+    <a-entity environment="preset: forest; dressingAmount: 250; dressingColor: #006400; ground: hills; groundTexture: walkernoise; groundColor: #556b2f; groundColor2: #6b8e23; shadow: true; skyType: atmosphere;"></a-entity>
   </a-scene>
 </body>
 
