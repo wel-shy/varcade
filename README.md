@@ -16,9 +16,9 @@ Group session for a care home, set in virtual field. People will solve tasks tog
 Using [A-Frame](https://aframe.io/), and [Glitch](https://glitch.com/~aframe).
 
 ### TODO
- - Create a scene (Floor, Sky)
+ - ~~Create a scene (Floor, Sky)~~
  - Build an arcade machine (Rectangle Entity, Lever)
  - Build tasks (find riddles, look at rendering videos?)
- - Animate machine
+ - Animate machine (detect gaze, and rotate lever)
  - Show task
  - Complete the task
