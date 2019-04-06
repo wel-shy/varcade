@@ -14,10 +14,37 @@
   let gazeInterval;
   const gazeThreshold = 3000;
 
+  const riddles = [
+    {
+      question: "What has many keys, but can't even open a single door?",
+      answer: 'A piano.',
+    },
+    {
+      question: 'What comes once in a minute, twice in a moment, but never in a thousand years?',
+      answer: 'The letter M.',
+    },
+    {
+      question: 'What has a head, a tail, is brown, and has no legs?',
+      answer: 'A penny.',
+    },
+  ];
+
+  // TODO: Delete, callback placeholder
   function print() {
     console.log('callback executed');
   }
 
+  /**
+   * Get the text element and display a random bit of trivia.
+   */
+  function displayRandomTrivia() {
+    const textEl = document.querySelector('#prompt');
+    textEl.setAttribute('value', riddles[Math.floor(Math.random() * riddles.length)].question);
+  };
+
+  /**
+   * Detect gaze handler.
+   */
   AFRAME.registerComponent('detect-gaze', {
     schema: {
       callback: {default: ''}
@@ -26,7 +53,6 @@
     init() {
       const el = this.el;
       const callback = this.data.callback;
-      console.log(this.data.callback);
 
       /**
        * Detect a gaze.
@@ -37,35 +63,13 @@
         gazeTimeout = setTimeout(() => {
           window[callback]();
         }, gazeThreshold);
-        //
-        console.log('hello world')
-      });
-    }
-  });
-
-  AFRAME.registerComponent('hover-over', {
-    init() {
-      // get element and rotation
-      const el = this.el;
-      let rotation = el.getAttribute('rotation');
-
-      /**
-       * On mouse over:
-       *   Set an interval to increment the y value of rotation vector.
-       */
-      el.addEventListener('mouseenter', () => {
-        rotateTimeout = setInterval(() => {
-          rotation.y = rotation.y + 1;
-          el.setAttribute('rotation', rotation);
-        }, 100);
       });
 
       /**
-       * on mouse leave:
-       *   Clear the interval.
+       * Clear the interval when the mouse leaves.
        */
       el.addEventListener('mouseleave', () => {
-        clearInterval(rotateTimeout);
+        clearTimeout(gazeTimeout);
       });
     }
   });
@@ -74,7 +78,7 @@
   <a-scene fog="type: linear; color: #AAA">
     <a-box id="slot-machine" src="https://cdn.glitch.com/af5ada0c-8fca-45ff-a2da-795fd849bc5d%2Fslot-machine-2304135_1920.png?1554552910277" position="0.5 0.5 0.3" rotation="0 0 0"  height="1.5" shadow detect-gaze="callback: print"></a-box>
     <a-cylinder color="black" height="1.1" radius = "0.05" position="1.12 0.8 0.3"></a-cylinder>
-        <a-sphere color="red" radius="0.1" position = "1.12 1.35 0.3"></a-sphere>
+        <a-sphere color="red" radius="0.1" position = "1.12 1.35 0.3" detect-gaze="callback: displayRandomTrivia"></a-sphere>
         <a-sphere color="grey" radius="0.2" position ="1 0.34 0.27"></a-sphere>
     <a-text id="prompt" value="Pull the lever for some Trivia" color="#000"
             position="-0.9 2.5 -3" scale="1.5 1.5 1.5"></a-text>
