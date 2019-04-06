@@ -12,7 +12,7 @@
   <script>
   let rotateTimeout;
 
-  AFRAME.registerComponent('change-color-on-hover', {
+  AFRAME.registerComponent('hover-over', {
     init() {
       const data = this.data;
       const el = this.el;  // <a-box>
@@ -33,8 +33,8 @@
   </script>
 
   <a-scene fog="type: linear; color: #AAA">
-    <a-box id="slot-machine" src="https://cdn.glitch.com/af5ada0c-8fca-45ff-a2da-795fd849bc5d%2Fslot-machine-2304135_1920.png?1554552910277" position="0.5 0.5 0.3" rotation="0 0 0" color="#0095DD" shadow change-color-on-hover="color: blue"></a-box>
-    <a-text value="Pull the lever for some Trivia!" color="#BBB"
+    <a-box id="slot-machine" src="https://cdn.glitch.com/af5ada0c-8fca-45ff-a2da-795fd849bc5d%2Fslot-machine-2304135_1920.png?1554552910277" position="0.5 0.5 0.3" rotation="0 0 0"  height="1.5" shadow hover-over=""></a-box>
+    <a-text id="prompt" value="Pull the lever for some Trivia" color="#BBB"
             position="-0.9 0.2 -3" scale="1.5 1.5 1.5"></a-text>
     <a-light type="directional" color="#FFF" intensity="0.5" position="-1 1 2">
     </a-light>
