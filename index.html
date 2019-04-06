@@ -1,18 +1,21 @@
 <!DOCTYPE html>
 <html lang="en" dir="ltr">
 <!-- https://www.npmjs.com/package/aframe-environment-component -->
+
 <head>
-  <meta charset="utf-8">
-  <script src="https://aframe.io/releases/0.9.0/aframe.min.js"></script>
-  <script src="https://unpkg.com/aframe-environment-component/dist/aframe-environment-component.min.js"></script>
-  <title>varcade</title>
+	<meta charset="utf-8">
+	<script src="https://aframe.io/releases/0.9.0/aframe.min.js"></script>
+	<script src="https://unpkg.com/aframe-environment-component/dist/aframe-environment-component.min.js"></script>
+	<link rel="stylesheet" href="/style.css">
+	<title>varcade</title>
 </head>
 
 <body>
-  <script>
-  let rotateTimeout;
+	<script>
+		let rotateTimeout;
   let gazeInterval;
   const gazeThreshold = 3000;
+  let rotationLimit = 20;
 
   const riddles = [
     {
@@ -37,10 +40,56 @@
   /**
    * Get the text element and display a random bit of trivia.
    */
-  function displayRandomTrivia() {
+  async function displayRandomTrivia() {
+    await rotateLever(1);
+    await rotateLever(-1);
     const textEl = document.querySelector('#prompt');
     textEl.setAttribute('value', riddles[Math.floor(Math.random() * riddles.length)].question);
   };
+
+  /**
+   * Rotate the lever up or down
+   * @param  {number} direction above 0 to increase rotation vector, less than 0 to decrease
+   */
+  async function rotateLever(direction) {
+    return new Promise((resolve, reject) => {
+      const lever = document.querySelector('#lever');
+      let rotation = lever.getAttribute('rotation');
+
+      if(!rotation) {
+        rotation = {
+          x: 0,
+          y: 0,
+          z: 0,
+        }
+      }
+
+      // increment rotation vector
+      const leverInterval = setInterval(() => {
+        if (direction > 0) {
+          if (rotation.x > rotationLimit) {
+            clearInterval(leverInterval);
+            resolve()
+          }
+          rotation.x += 2;
+        }
+        if (direction < 0) {
+          if (rotation.x < 0) {
+            clearInterval(leverInterval);
+            resolve()
+          }
+          rotation.x -= 2;
+        }
+
+        // handle three.js object directly for performance.
+        lever.object3D.rotation.set(
+          THREE.Math.degToRad(rotation.x),
+          THREE.Math.degToRad(rotation.y),
+          THREE.Math.degToRad(rotation.z)
+        );
+      }, 1);
+    });
+  }
 
   /**
    * Detect gaze handler.
@@ -75,22 +124,29 @@
   });
   </script>
 
-  <a-scene fog="type: linear; color: #AAA">
-    <a-box id="slot-machine" src="https://cdn.glitch.com/af5ada0c-8fca-45ff-a2da-795fd849bc5d%2Fslot-machine-2304135_1920.png?1554552910277" position="0.5 0.5 0.3" rotation="0 0 0"  height="1.5" shadow detect-gaze="callback: print"></a-box>
-    <a-cylinder color="black" height="1.1" radius = "0.05" position="1.12 0.8 0.3"></a-cylinder>
-        <a-sphere color="red" radius="0.1" position = "1.12 1.35 0.3" detect-gaze="callback: displayRandomTrivia"></a-sphere>
-        <a-sphere color="grey" radius="0.2" position ="1 0.34 0.27"></a-sphere>
-    <a-text id="prompt" value="Pull the lever for some Trivia" color="#000"
-            position="-0.9 2.5 -3" scale="1.5 1.5 1.5"></a-text>
-    <a-light type="directional" color="#FFF" intensity="0.5" position="-1 1 2">
-    </a-light>
-    <a-light type="ambient" color="#FFF">
-    </a-light>
-    <a-camera position="0 1 4" cursor-visible="true" cursor-scale="2" cursor-color="#0095DD" cursor-opacity="0.5" look-controls>
-      <a-cursor fuse="true" timeout="5000"></a-cursor>
-    </a-camera>
-    <a-entity environment="preset: forest; dressingAmount: 250; dressingColor: #006400; ground: hills; groundTexture: walkernoise; groundColor: #556b2f; groundColor2: #6b8e23; shadow: true; skyType: atmosphere;"></a-entity>
-  </a-scene>
-</body>
+	<a-scene fog="type: linear; color: #AAA">
+		<a-assets>
+					<a-asset-item id="mtl" src="https://cdn.glitch.com/fd29d84f-7cc5-4256-aa29-e94869ce06fe%2Fmaterials.mtl?1554561108272"></a-asset-item>
+					<a-asset-item id="obj" src="https://cdn.glitch.com/fd29d84f-7cc5-4256-aa29-e94869ce06fe%2Fmodel.obj?1554561110927"></a-asset-item>
+				</a-assets>
+				<a-entity obj-model="obj: #obj; mtl: #mtl;" rotation="0 180 0" shadow="receive: false;" position="0.35 1 0.3" scale="5 5 5"></a-entity>
 
+
+		<a-entity id="lever">
+			<a-cylinder color="black" height="1.1" radius="0.05" position="1.95 0.8 0.3"></a-cylinder>
+			<a-sphere color="red" radius="0.1" position="1.95 1.35 0.3" detect-gaze="callback: displayRandomTrivia"></a-sphere>
+			<a-sphere color="grey" radius="0.2" position="1.92 0.34 0.27"></a-sphere>
+		</a-entity>
+
+		<a-text id="prompt" value="Pull the lever for some Trivia" color="#000" position="-1.5 2.5 -2" scale="1.5 1.5 1.5"></a-text>
+		<a-light type="directional" color="#FFF" intensity="0.5" position="-1 1 2">
+		</a-light>
+		<a-light type="ambient" color="#FFF">
+		</a-light>
+		<a-camera position="0 1 4" cursor-visible="true" cursor-scale="2" cursor-color="#0095DD" cursor-opacity="0.5" look-controls>
+			<a-cursor fuse="true" timeout="5000"></a-cursor>
+		</a-camera>
+		<a-entity environment="preset: forest; dressingAmount: 500; dressingColor: #006400; ground: hills; groundTexture: walkernoise; groundColor: #556b2f; groundColor2: #6b8e23; shadow: true; skyType: atmosphere;"></a-entity>
+	</a-scene>
+</body>
 </html>
