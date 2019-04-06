@@ -1,136 +1,164 @@
 <!DOCTYPE html>
 <html lang="en" dir="ltr">
-<!-- https://www.npmjs.com/package/aframe-environment-component -->
 
 <head>
 	<meta charset="utf-8">
 	<script src="https://aframe.io/releases/0.9.0/aframe.min.js"></script>
 	<script src="https://unpkg.com/aframe-environment-component/dist/aframe-environment-component.min.js"></script>
 	<link rel="stylesheet" href="/style.css">
+	<link href="https://fonts.googleapis.com/css?family=Lato:400,700" rel="stylesheet">
 	<title>varcade</title>
 </head>
 
 <body>
 	<script>
 		let rotateTimeout;
-  let gazeInterval;
-  const gazeThreshold = 3000;
-  let rotationLimit = 20;
+		let gazeInterval;
+		const gazeThreshold = 3000;
+		let rotationLimit = 20;
+    let questionIdx = 0;
 
-  const riddles = [
-    {
-      question: "What has many keys, but can't even open a single door?",
-      answer: 'A piano.',
-    },
-    {
-      question: 'What comes once in a minute, twice in a moment, but never in a thousand years?',
-      answer: 'The letter M.',
-    },
-    {
-      question: 'What has a head, a tail, is brown, and has no legs?',
-      answer: 'A penny.',
-    },
-  ];
+    // list of riddles.
+		const riddles = [{
+				question: "What has many keys, but can't even open a single door?",
+				answer: 'A piano.',
+			},
+			{
+				question: 'What comes once in a minute, twice in a moment, but never in a thousand years?',
+				answer: 'The letter M.',
+			},
+			{
+				question: 'What has a head, a tail, is brown, and has no legs?',
+				answer: 'A penny.',
+			},
+		];
 
-  // TODO: Delete, callback placeholder
-  function print() {
-    console.log('callback executed');
-  }
+		/**
+		 * Get the text element and display a random bit of trivia.
+		 */
+		async function displayRandomTrivia() {
+      questionIdx = Math.floor(Math.random() * riddles.length);
+			await rotateLever(1);
+			await rotateLever(-1);
 
-  /**
-   * Get the text element and display a random bit of trivia.
-   */
-  async function displayRandomTrivia() {
-    await rotateLever(1);
-    await rotateLever(-1);
-    const textEl = document.querySelector('#prompt');
-    textEl.setAttribute('value', riddles[Math.floor(Math.random() * riddles.length)].question);
-  };
+      // Hide prompt
+      const prompt = document.querySelector('#prompt');
+      prompt.setAttribute('visbility', 'false');
 
-  /**
-   * Rotate the lever up or down
-   * @param  {number} direction above 0 to increase rotation vector, less than 0 to decrease
-   */
-  async function rotateLever(direction) {
-    return new Promise((resolve, reject) => {
-      const lever = document.querySelector('#lever');
-      let rotation = lever.getAttribute('rotation');
+      // Set the question
+			const textEl = document.querySelector('#question');
+      textEl.setAttribute('visbility', 'true');
+			textEl.setAttribute('value', riddles[questionIdx].question);
+		}
 
-      if(!rotation) {
-        rotation = {
-          x: 0,
-          y: 0,
-          z: 0,
-        }
-      }
-
-      // increment rotation vector
-      const leverInterval = setInterval(() => {
-        if (direction > 0) {
-          if (rotation.x > rotationLimit) {
-            clearInterval(leverInterval);
-            resolve()
-          }
-          rotation.x += 2;
-        }
-        if (direction < 0) {
-          if (rotation.x < 0) {
-            clearInterval(leverInterval);
-            resolve()
-          }
-          rotation.x -= 2;
-        }
-
-        // handle three.js object directly for performance.
-        lever.object3D.rotation.set(
-          THREE.Math.degToRad(rotation.x),
-          THREE.Math.degToRad(rotation.y),
-          THREE.Math.degToRad(rotation.z)
-        );
-      }, 1);
-    });
-  }
-
-  /**
-   * Detect gaze handler.
-   */
-  AFRAME.registerComponent('detect-gaze', {
-    schema: {
-      callback: {default: ''}
-    },
-
-    init() {
-      const el = this.el;
-      const callback = this.data.callback;
-
-      /**
-       * Detect a gaze.
-       *
-       * Should set a timeout and execute a function after.
-       */
-      el.addEventListener('mouseenter', () => {
-        gazeTimeout = setTimeout(() => {
-          window[callback]();
-        }, gazeThreshold);
-      });
-
-      /**
-       * Clear the interval when the mouse leaves.
-       */
-      el.addEventListener('mouseleave', () => {
-        clearTimeout(gazeTimeout);
-      });
+    /**
+     * Show the answer
+     */
+    function displayAnswer() {
+      // Hide prompt
+      const question = document.querySelector('#question');
+      question.setAttribute('visbility', 'false');
+      question.setAttribute('value', riddles[questionIdx].question);
     }
-  });
-  </script>
+
+		/**
+		 * Rotate the lever up or down
+		 * @param  {number} direction above 0 to increase rotation vector, less than 0 to decrease
+		 */
+		async function rotateLever(direction) {
+			return new Promise((resolve, reject) => {
+				const lever = document.querySelector('#lever');
+				let rotation = lever.getAttribute('rotation');
+
+				if (!rotation) {
+					rotation = {
+						x: 0,
+						y: 0,
+						z: 0,
+					}
+				}
+
+				// increment rotation vector
+				const leverInterval = setInterval(() => {
+					if (direction > 0) {
+						if (rotation.x > rotationLimit) {
+							clearInterval(leverInterval);
+							resolve()
+						}
+						rotation.x += 2;
+					}
+					if (direction < 0) {
+						if (rotation.x < 0) {
+							clearInterval(leverInterval);
+							resolve()
+						}
+						rotation.x -= 2;
+					}
+
+					// handle three.js object directly for performance.
+					lever.object3D.rotation.set(
+						THREE.Math.degToRad(rotation.x),
+						THREE.Math.degToRad(rotation.y),
+						THREE.Math.degToRad(rotation.z)
+					);
+				}, 1);
+			});
+		}
+
+		/**
+		 * Detect gaze handler.
+		 */
+		AFRAME.registerComponent('detect-gaze', {
+			schema: {
+				callback: {
+					default: ''
+				}
+			},
+
+			init() {
+				const el = this.el;
+				const callback = this.data.callback;
+
+				/**
+				 * Detect a gaze.
+				 *
+				 * Should set a timeout and execute a function after.
+				 */
+				el.addEventListener('mouseenter', () => {
+					gazeTimeout = setTimeout(() => {
+						window[callback]();
+					}, gazeThreshold);
+				});
+
+				/**
+				 * Clear the interval when the mouse leaves.
+				 */
+				el.addEventListener('mouseleave', () => {
+					clearTimeout(gazeTimeout);
+				});
+			}
+		});
+	</script>
 
 	<a-scene fog="type: linear; color: #AAA">
+<!-- Object for slot machine -->
 		<a-assets>
-					<a-asset-item id="mtl" src="https://cdn.glitch.com/fd29d84f-7cc5-4256-aa29-e94869ce06fe%2Fmaterials.mtl?1554561108272"></a-asset-item>
-					<a-asset-item id="obj" src="https://cdn.glitch.com/fd29d84f-7cc5-4256-aa29-e94869ce06fe%2Fmodel.obj?1554561110927"></a-asset-item>
-				</a-assets>
-				<a-entity obj-model="obj: #obj; mtl: #mtl;" rotation="0 180 0" shadow="receive: false;" position="0.35 1 0.3" scale="5 5 5"></a-entity>
-
+			<a-asset-item id="mtl" src="https://cdn.glitch.com/fd29d84f-7cc5-4256-aa29-e94869ce06fe%2Fmaterials.mtl?1554561108272"></a-asset-item>
+			<a-asset-item id="obj" src="https://cdn.glitch.com/fd29d84f-7cc5-4256-aa29-e94869ce06fe%2Fmodel.obj?1554561110927"></a-asset-item>
+		</a-assets>
+		<a-entity obj-model="obj: #obj; mtl: #mtl;" rotation="0 180 0" shadow="receive: false;" position="0.35 1 0.3" scale="5 5 5"></a-entity>
+<!-- object for Cloud 1 -->
+		<a-assets>
+			<a-asset-item id="mtlCloud1" src="https://cdn.glitch.com/af5ada0c-8fca-45ff-a2da-795fd849bc5d%2Fcloud_02.mtl?1554569757621"></a-asset-item>
+			<a-asset-item id="objCloud1" src="https://cdn.glitch.com/af5ada0c-8fca-45ff-a2da-795fd849bc5d%2Fcloud_02.obj?1554569758187"></a-asset-item>
+		</a-assets>
+		<a-entity obj-model="obj: #objCloud1; mtl: #mtlCloud1;" rotation="0 180 0" shadow="receive: false;" position="1 1 1" scale="5 5 5"></a-entity>
+<!-- Object for cloud 2 -->
+<a-assets>
+	<a-asset-item id="mtlCloud2" src="https://cdn.glitch.com/af5ada0c-8fca-45ff-a2da-795fd849bc5d%2Fcloud_02.mtl?1554569757621"></a-asset-item>
+	<a-asset-item id="objCloud2" src="https://cdn.glitch.com/af5ada0c-8fca-45ff-a2da-795fd849bc5d%2Fcloud_02.obj?1554569758187"></a-asset-item>
+</a-assets>
+<a-entity obj-model="obj: #objCloud2; mtl: #mtlCloud2;" rotation="0 180 0" shadow="receive: false;" position="1 1 1" scale="5 5 5"></a-entity>
 
 		<a-entity id="lever">
 			<a-cylinder color="black" height="1.1" radius="0.05" position="1.95 0.8 0.3"></a-cylinder>
@@ -138,7 +166,11 @@
 			<a-sphere color="grey" radius="0.2" position="1.92 0.34 0.27"></a-sphere>
 		</a-entity>
 
-		<a-text id="prompt" value="Pull the lever for some Trivia" color="#000" position="-1.5 2.5 -2" scale="1.5 1.5 1.5"></a-text>
+		<a-text id="prompt" value="Pull the leaver" color="#000" position="-1.5 2.5 -2" scale="1.5 1.5 1.5"></a-text>
+
+    <a-text id="question" value="" color="#000" position="-1.5 2.5 -2" scale="1.5 1.5 1.5" visibility="false"></a-text>
+    <a-text id="answer" value="" color="#000" position="-1.5 2.5 -2" scale="1.5 1.5 1.5" visibility="false"></a-text>
+
 		<a-light type="directional" color="#FFF" intensity="0.5" position="-1 1 2">
 		</a-light>
 		<a-light type="ambient" color="#FFF">
@@ -149,4 +181,9 @@
 		<a-entity environment="preset: forest; dressingAmount: 500; dressingColor: #006400; ground: hills; groundTexture: walkernoise; groundColor: #556b2f; groundColor2: #6b8e23; shadow: true; skyType: atmosphere;"></a-entity>
 	</a-scene>
 </body>
+
 </html>
+
+https://codepen.io/matthewsimo/pen/yeaLxP
+
+https://github.com/ngokevin/aframe-mss
