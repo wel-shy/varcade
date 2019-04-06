@@ -1,0 +1,24 @@
+{
+  "name": "varcade",
+  "version": "0.0.0",
+  "description": "Virtual reality arcade",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/wel-shy/varcade.git"
+  },
+  "author": "Daniel Welsh",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/wel-shy/varcade/issues"
+  },
+  "homepage": "https://github.com/wel-shy/varcade#readme",
+  "devDependencies": {
+    "eslint": "^5.16.0",
+    "eslint-config-airbnb-base": "^13.1.0",
+    "eslint-plugin-import": "^2.16.0"
+  }
+}
