@@ -36,8 +36,7 @@
 		 */
 		async function displayRandomTrivia() {
 			questionIdx = Math.floor(Math.random() * riddles.length);
-			await rotateLever(1);
-			await rotateLever(-1);
+			await animateLever();
 
 			// Hide prompt
 			const prompt = document.querySelector('#prompt');
@@ -55,6 +54,22 @@
       const planeEl = document.querySelector('#plane');
       planeEl.setAttribute('visible', 'true');
 		}
+
+    async function animateLever() {
+      await rotateLever(1);
+			await rotateLever(-1);
+    }
+
+    function displayVideo() {
+      const vid = document.getElementById("video-player");
+
+      vid.setAttribute('visible', 'true');
+      vid.play();
+
+      vid.onplay = function() {
+        console.log('video playing');
+      };
+    }
 
 		/**
 		 * Show the answer
@@ -165,6 +180,7 @@
 			<!-- Object for cloud 1 -->
 			<a-asset-item id="cloud-mtl" src="https://cdn.glitch.com/fd29d84f-7cc5-4256-aa29-e94869ce06fe%2Ftrain.mtl?1554579002460"></a-asset-item>
 			<a-asset-item id="cloud-obj" src="https://cdn.glitch.com/fd29d84f-7cc5-4256-aa29-e94869ce06fe%2Ftrain.obj?1554579005920"></a-asset-item>
+			<video id="video" loop="false" src="https://cdn.glitch.com/af5ada0c-8fca-45ff-a2da-795fd849bc5d%2FToto%20-%20Africa%20(Official%20Music%20Video)%20(480p).mp4?1554627395969"></video>
 		</a-assets>
 		<!-- Slot Machine -->
 		<a-entity obj-model="obj: #slot-obj; mtl: #slot-mtl;" rotation="0 180 0" shadow="receive: false;" position="0.35 1 0.3" scale="5 5 5"></a-entity>
@@ -174,13 +190,13 @@
 			<a-sphere color="red" radius="0.1" position="1.95 1.35 0.3" detect-gaze="callback: displayRandomTrivia"></a-sphere>
 			<a-sphere color="grey" radius="0.2" position="1.92 0.34 0.27"></a-sphere>
 		</a-entity>
-
+		<a-video id="video-player" src="#video" width="12" height="6" position="1 5 10" rotation="10 180 0"></a-video>
     <a-plane id="plane" color="#fff" width="2" height="0.5" position="-0.5 1.5 -2" detect-gaze="callback: displayAnswer" visible="false"></a-plane>
 
-		<a-text id="prompt" value="Pull the leaver" color="#000" position="-1.5 2.5 -2" scale="1.5 1.5 1.5"></a-text>
-		<a-text id="question" value="" color="#000" position="-1.5 2.5 -2" scale="1.5 1.5 1.5" visible="false"></a-text>
-    <a-text id="next" value="Show answer" color="#000" position="-1.5 1.5 -2" scale="1.5 1.5 1.5" visible="false"></a-text>
-		<a-text id="answer" value="" color="#000" position="-1.5 2.5 -2" scale="1.5 1.5 1.5" visible="false"></a-text>
+		<a-text id="prompt" value="Pull the leaver" color="#000" position="-1.5 3.5 -2" scale="1.5 1.5 1.5"></a-text>
+		<a-text id="question" value="" color="#000" position="-1.5 3.5 -2" scale="1.5 1.5 1.5" visible="false"></a-text>
+    <a-text id="next" value="Show answer" color="#000" position="-1.5 2.5 -2" scale="1.5 1.5 1.5" visible="false"></a-text>
+		<a-text id="answer" value="" color="#000" position="-1.5 3.5 -2" scale="1.5 1.5 1.5" visible="false"></a-text>
 
 		<a-light type="directional" color="#FFF" intensity="0.5" position="-1 2.5 2">
 		</a-light>
