@@ -12,7 +12,7 @@
 	<script>
 		let rotateTimeout;
 		let gazeInterval;
-		const gazeThreshold = 2000;
+		const gazeThreshold = 1000;
 		let rotationLimit = 20;
 		let questionIdx = 0;
 
@@ -164,6 +164,7 @@
 			<a-asset-item id="cloud-mtl" src="https://cdn.glitch.com/fd29d84f-7cc5-4256-aa29-e94869ce06fe%2Ftrain.mtl?1554579002460"></a-asset-item>
 			<a-asset-item id="cloud-obj" src="https://cdn.glitch.com/fd29d84f-7cc5-4256-aa29-e94869ce06fe%2Ftrain.obj?1554579005920"></a-asset-item>
 			<video id="video" autoplay loop="false" src="https://cdn.glitch.com/af5ada0c-8fca-45ff-a2da-795fd849bc5d%2FToto%20-%20Africa%20(Official%20Music%20Video)%20(480p).mp4?1554627395969" crossorigin="anonymous"></video>
+<!-- <img id="sage-photo" src="https://cdn.glitch.com/af5ada0c-8fca-45ff-a2da-795fd849bc5d%2Ftan-kaninthanond-1348139-unsplash.jpg?1554640652518"> -->
 		</a-assets>
 		<!-- Slot Machine -->
 		<a-entity obj-model="obj: #slot-obj; mtl: #slot-mtl;" rotation="0 180 0" shadow="receive: false;" position="0.35 1 0.3" scale="5 5 5"></a-entity>
@@ -173,14 +174,21 @@
 			<a-sphere color="red" radius="0.1" position="1.95 1.35 0.3" detect-gaze="callback: displayRandomTrivia"></a-sphere>
 			<a-sphere color="grey" radius="0.2" position="1.92 0.34 0.27"></a-sphere>
 		</a-entity>
-		<a-video id="video-player" autoplay src="#video" width="12" height="6" position="1 4.5 10" rotation="10 180 0"></a-video>
-    <a-plane id="plane" color="#fff" width="2" height="0.5" position="-0.5 2.5 -2" detect-gaze="callback: displayAnswer" visible="false"></a-plane>
+		<a-video id="video-player" autoplay src="#video" width="12" height="6" position="1 4.5 13" rotation="10 180 0"></a-video>
+    <a-plane id="plane" color="#fff" width="3" height="0.5" position="0 3 -2" detect-gaze="callback: displayAnswer" visible="false"></a-plane>
 
-		<a-text id="prompt" value="Pull the lever" color="#000" position="-1.5 3.5 -2" scale="2 2 2"></a-text>
-		<a-text id="question" value="" color="#000" position="-1.5 3.5 -2" scale="2 2 2" visible="false"></a-text>
-    <a-text id="next" value="Show answer" color="#000" position="-1.5 2.5 -2" scale="2 2 2" visible="false"></a-text>
-		<a-text id="answer" value="" color="#000" position="-1.5 3.5 -2" scale="2 2 2" visible="false"></a-text>
-    <a-text id="video-question" value="Can you guess the Artist and Song Title?" color="#000" position="7 0.4 10" rotation="0 180 0" scale="3 3 3"></a-text>
+		<a-text id="prompt" align="center" value="Pull the lever" color="#000" position="0.5 4 -2" scale="3 3 3"></a-text>
+		<a-text id="question" align="center" value="" color="#000" position="0.5 4 -2" scale="2 2 2" visible="false"></a-text>
+    <a-text id="next" value="Show answer" color="#000" position="-1.5 3 -2" scale="2 2 2" visible="false"></a-text>
+		<a-text id="answer" value="" color="#000" position="-1.5 4 -2" scale="2 2 2" visible="false"></a-text>
+    <a-text id="video-question" value="Can you guess the Artist and Song Title?" color="#000" position="7 0.4 13" rotation="0 180 0" scale="3 3 3"></a-text>
+
+		<a-image src="https://cdn.glitch.com/af5ada0c-8fca-45ff-a2da-795fd849bc5d%2Ftan-kaninthanond-1348139-unsplash.jpg?1554640652518" position="-7 3 6" rotation="0 90 0" height="4" width="2"></a-image>
+		<a-text id="sageText" color="#000" value="What is the name of this building?" align="center" position="-7 0.5 6" scale="1.5" rotation="0 90 0"></a-text>
+
+		<a-image src="https://cdn.glitch.com/af5ada0c-8fca-45ff-a2da-795fd849bc5d%2Fanthony-winter-770398-unsplash.jpg?1554640651284" position="-7 3 0" rotation="0 90 0" height="3" width="4"></a-image>
+		<a-text id="angelText" color="#000" value="When was this famous sculpture built?" align="center" position="-7 0.5 0" scale="1.5" rotation="0 90 0"></a-text>
+
 
 		<a-light type="directional" color="#FFF" intensity="0.5" position="-1 2.5 2">
 		</a-light>
